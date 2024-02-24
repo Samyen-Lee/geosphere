@@ -7,10 +7,11 @@ interface MapProps {
   controls?: boolean;
   sources?: MapSource[];
   layers?: AnyLayer[];
+  interactions?: any[];
 }
 
 const MapComponent = (props: MapProps) => {
-  const { controls, sources, layers } = props;
+  const { controls, sources, layers, interactions } = props;
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<Map | null>(null);
   const [lng, setLng] = useState<number>(-77.04);
@@ -49,11 +50,6 @@ const MapComponent = (props: MapProps) => {
 
   useEffect(() => {
     // Create a popup, but don't add it to the map yet.
-    const popup = new mapboxgl.Popup({
-      closeButton: false,
-      closeOnClick: false,
-    });
-
     map.current?.on("load", () => {
       if (map.current) {
         if (sources) {
@@ -68,48 +64,14 @@ const MapComponent = (props: MapProps) => {
         }
       }
     });
-    map.current?.on("mouseenter", "places", (e) => {
-      if (!map.current) return;
-
-      // Change the cursor style as a UI indicator.
-      map.current.getCanvas().style.cursor = "pointer";
-
-      // Copy coordinates array.
-      const coordinates = e.features[0].geometry.coordinates.slice();
-      const description = e.features[0].properties.description;
-
-      // Ensure that if the map is zoomed out such that multiple
-      // copies of the feature are visible, the popup appears
-      // over the copy being pointed to.
-      while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-      }
-
-      // Populate the popup and set its coordinates
-      // based on the feature found.
-      const myElement = <div>Hello, world!</div>;
-
-      // Rendez l'élément React dans une chaîne HTML
-      const htmlString = ReactDOMServer.renderToString(myElement);
-
-      // Créez un élément DOM à partir de la chaîne HTML
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = htmlString;
-
-      // Obtenez le premier enfant (le nœud DOM) du conteneur temporaire
-      const node: Node | null = tempDiv.firstChild;
-
-      node &&
-        popup.setLngLat(coordinates).setDOMContent(node).addTo(map.current);
-    });
-
-    map.current?.on("mouseleave", "places", () => {
-      if (map.current) {
-        map.current.getCanvas().style.cursor = "";
-        popup.remove();
-      }
-    });
-  }, [layers, sources]);
+    interactions?.forEach(({ eventType, featureId, interactionFn }) => {
+      map.current?.on(eventType, featureId, (e) => {
+        if (!map.current) return;
+  
+        interactionFn(e, map)
+      });
+    })
+  }, [interactions, layers, sources]);
 
   return (
     <div>

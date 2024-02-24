@@ -1,0 +1,50 @@
+import mapboxgl from "mapbox-gl";
+
+const popup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+});
+
+export const displayPopup = (e, map) => {
+  if (!map.current) return;
+
+  // Change the cursor style as a UI indicator.
+  map.current.getCanvas().style.cursor = "pointer";
+
+  // Copy coordinates array.
+  const coordinates = e.features[0].geometry.coordinates.slice();
+  const description = e.features[0].properties.description;
+
+  // Ensure that if the map is zoomed out such that multiple
+  // copies of the feature are visible, the popup appears
+  // over the copy being pointed to.
+  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+  }
+
+  // // Populate the popup and set its coordinates
+  // // based on the feature found.
+  // const myElement = <div>Hello, world!</div>;
+
+  // // Rendez l'élément React dans une chaîne HTML
+  // const htmlString = ReactDOMServer.renderToString(myElement);
+
+  // // Créez un élément DOM à partir de la chaîne HTML
+  // const tempDiv = document.createElement("div");
+  // tempDiv.innerHTML = htmlString;
+
+  // // Obtenez le premier enfant (le nœud DOM) du conteneur temporaire
+  // const node: Node | null = tempDiv.firstChild;
+
+  // node &&
+  // popup.setLngLat(coordinates).setDOMContent(node).addTo(map.current);
+
+  popup.setLngLat(coordinates).setHTML(description).addTo(map.current);
+};
+
+export const closePopup = (e, map) => {
+  if (map.current) {
+    map.current.getCanvas().style.cursor = "";
+    popup.remove();
+  }
+};

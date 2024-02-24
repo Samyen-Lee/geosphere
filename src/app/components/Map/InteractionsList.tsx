@@ -1,3 +1,4 @@
+import { MapIntercationFn } from "@/types/MapSource";
 import mapboxgl, { EventData, MapLayerEventType } from "mapbox-gl";
 import { MutableRefObject } from "react";
 
@@ -6,20 +7,20 @@ const popup = new mapboxgl.Popup({
   closeOnClick: false,
 });
 
-export const displayPopup = <T extends keyof MapLayerEventType>(
-  e: MapLayerEventType[T] & EventData,
-  map: MutableRefObject<mapboxgl.Map | null>
+export const displayPopup: MapIntercationFn<keyof MapLayerEventType> = (
+  e,
+  map
 ) => {
-  if (!map.current) return;
+  if (!map?.current || !e) return;
 
   // Change the cursor style as a UI indicator.
   map.current.getCanvas().style.cursor = "pointer";
 
   // Copy coordinates array.
   if (e.features && e.features.length > 0) {
-    const coordinates =
-       e.features[0].geometry?.coordinates?.slice();
-    const description = e.features[0]?.properties && e.features[0]?.properties.description;
+    const coordinates = e.features[0].geometry?.coordinates?.slice();
+    const description =
+      e.features[0]?.properties && e.features[0]?.properties.description;
 
     // Ensure that if the map is zoomed out such that multiple
     // copies of the feature are visible, the popup appears
@@ -49,12 +50,23 @@ export const displayPopup = <T extends keyof MapLayerEventType>(
   }
 };
 
-export const closePopup = <T extends keyof MapLayerEventType>(
-  e: MapLayerEventType[T] & EventData,
-  map: MutableRefObject<mapboxgl.Map | null>
+export const closePopup: MapIntercationFn<keyof MapLayerEventType> = (
+  e,
+  map
 ) => {
-  if (map.current) {
+  if (map?.current) {
     map.current.getCanvas().style.cursor = "";
     popup.remove();
+  }
+};
+
+export const displayModal: MapIntercationFn<keyof MapLayerEventType> = (
+  e,
+  _,
+  onOpen: (coord: number[]) => void
+) => {
+  if (e?.features && e.features.length > 0) {
+    const coordinates = e.features[0].geometry?.coordinates?.slice();
+    onOpen(coordinates);
   }
 };

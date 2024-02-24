@@ -1,6 +1,9 @@
 import { Meta, StoryObj } from "@storybook/react";
 import MapComponent from "./MapComponent";
 
+import places from "../../datas/places-collection.json";
+import { GeoJSONSourceRaw } from "mapbox-gl";
+
 const meta = {
   title: "Components/Map",
   component: MapComponent,
@@ -15,4 +18,38 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Map: Story = {};
+export const BasicMap: Story = {};
+
+export const MapWithControls: Story = {
+  args: {
+    controls: true,
+  },
+};
+
+export const MapWithInteractions: Story = {
+  args: {
+    controls: true,
+    sources: [
+      {
+        name: "places",
+        data: {
+          type: "geojson",
+          data: JSON.parse(JSON.stringify(places)),
+        },
+      },
+    ],
+    layers: [
+      {
+        id: "places",
+        type: "circle",
+        source: "places",
+        paint: {
+          "circle-color": "#4264fb",
+          "circle-radius": 6,
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
+    ],
+  },
+};

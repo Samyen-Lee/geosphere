@@ -19,6 +19,6 @@ export type MapIntercationFn<T extends keyof MapLayerEventType> = (
 
 export type IInteractions<T extends keyof MapLayerEventType> = {
   eventType: T;
-  featureId: string;
   interactionFn: MapIntercationFn<T>;
+  featureId?: string | string[];
 };

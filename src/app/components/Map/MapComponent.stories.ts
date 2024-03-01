@@ -54,18 +54,22 @@ export const MapWithInteractions: Story = {
     ],
     interactions: [
       {
-        eventType: "mouseenter",
-        featureId: "places",
-        interactionFn: displayPopup
+        eventType: "mousemove",
+        interactionFn: displayPopup,
+        featureId: ["poi-label", "places"],
       },
+      // {
+      //   eventType: "mouseenter",
+      //   featureId: "places",
+      //   interactionFn: displayPopup
+      // },
       {
         eventType: "mouseleave",
-        featureId: "places",
+        featureId: ["poi-label", "places"],
         interactionFn: closePopup
       },
       {
         eventType: "click",
-        featureId: "places",
         interactionFn: displayModal
       }
     ]

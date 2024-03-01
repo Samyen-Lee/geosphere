@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { FC, useCallback, useEffect, useRef, useState } from "react";
 import mapboxgl, { AnyLayer, Map, MapLayerEventType } from "mapbox-gl";
 import ReactDOMServer from "react-dom/server";
 import { DialogComponent } from "../Dialog/DialogComponent";
@@ -11,7 +11,7 @@ interface MapProps {
   interactions?: IInteractions<keyof MapLayerEventType>[];
 }
 
-const MapComponent = (props: MapProps) => {
+const MapComponent: FC<MapProps> =  (props) => {
   const { controls, sources, layers, interactions } = props;
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<Map | null>(null);
@@ -57,7 +57,24 @@ const MapComponent = (props: MapProps) => {
   }, [switchControls]);
 
   useEffect(() => {
-    // Create a popup, but don't add it to the map yet.
+    interactions?.forEach(({ eventType, featureId, interactionFn }) => {
+      if (featureId) {
+        map.current?.on(eventType, featureId, (e) => {
+          if (!map.current) return;
+
+          interactionFn(e, map, openModal);
+        });
+      } else {
+        map.current?.on(eventType, (e) => {
+          if (!map.current) return;
+
+          interactionFn(e, map, openModal);
+        });
+      }
+    });
+  }, [interactions, layers, sources]);
+
+  useEffect(() => {
     map.current?.on("load", () => {
       if (map.current) {
         if (sources) {
@@ -72,14 +89,7 @@ const MapComponent = (props: MapProps) => {
         }
       }
     });
-    interactions?.forEach(({ eventType, featureId, interactionFn }) => {
-      map.current?.on(eventType, featureId, (e) => {
-        if (!map.current) return;
-
-        interactionFn(e, map, openModal);
-      });
-    });
-  }, [interactions, layers, sources]);
+  }, []);
 
   const closeModal = () => {
     setModalOpen(false);

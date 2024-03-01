@@ -1,9 +1,9 @@
 import { Meta, StoryObj } from "@storybook/react";
 import MapComponent from "./MapComponent";
 
-import places from "../../datas/places-collection.json";
+import places from "../../../datas/places-collection.json";
 import { GeoJSONSourceRaw } from "mapbox-gl";
-import { closePopup, displayPopup } from "./InteractionsList";
+import { closePopup, displayModal, displayPopup } from "./InteractionsList";
 
 const meta = {
   title: "Components/Map",
@@ -63,6 +63,11 @@ export const MapWithInteractions: Story = {
         featureId: "places",
         interactionFn: closePopup
       },
+      {
+        eventType: "click",
+        featureId: "places",
+        interactionFn: displayModal
+      }
     ]
   },
 };

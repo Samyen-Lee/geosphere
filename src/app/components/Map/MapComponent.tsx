@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import mapboxgl, { AnyLayer, Map } from "mapbox-gl";
-import { MapSource } from "@/types/MapSource";
+import mapboxgl, { AnyLayer, Map, MapLayerEventType } from "mapbox-gl";
 import ReactDOMServer from "react-dom/server";
+import { DialogComponent } from "../Dialog/DialogComponent";
+import { IInteractions, IMapSource } from "@/types/MapSource";
 
 interface MapProps {
   controls?: boolean;
-  sources?: MapSource[];
+  sources?: IMapSource[];
   layers?: AnyLayer[];
-  interactions?: any[];
+  interactions?: IInteractions<keyof MapLayerEventType>[];
 }
 
 const MapComponent = (props: MapProps) => {
@@ -17,6 +18,8 @@ const MapComponent = (props: MapProps) => {
   const [lng, setLng] = useState<number>(-77.04);
   const [lat, setLat] = useState<number>(38.907);
   const [zoom, setZoom] = useState<number>(11.15);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [selected, setSelected] = useState<number[]>([]);
   const [mapControls, setMapControls] = useState([
     new mapboxgl.NavigationControl(),
     new mapboxgl.ScaleControl(),
@@ -33,6 +36,11 @@ const MapComponent = (props: MapProps) => {
       }
     }
   }, [controls, mapControls]);
+
+  const openModal = (coord: number[]) => {
+    setModalOpen(true);
+    setSelected(coord);
+  };
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -67,15 +75,24 @@ const MapComponent = (props: MapProps) => {
     interactions?.forEach(({ eventType, featureId, interactionFn }) => {
       map.current?.on(eventType, featureId, (e) => {
         if (!map.current) return;
-  
-        interactionFn(e, map)
+
+        interactionFn(e, map, openModal);
       });
-    })
+    });
   }, [interactions, layers, sources]);
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   return (
     <div>
       <div ref={mapContainer} className="map-container" />
+      <DialogComponent
+        coordinates={selected}
+        open={modalOpen}
+        onClose={closeModal}
+      />
     </div>
   );
 };

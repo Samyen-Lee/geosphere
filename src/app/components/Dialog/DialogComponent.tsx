@@ -1,13 +1,12 @@
+import { classNames } from "../../../utils";
 import { Dialog, DialogProps, Tab, Transition } from "@headlessui/react";
 import { ElementType, FC, Fragment, useState } from "react";
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import datas from "../../../datas/videos-collection.json";
+import VideoPlayer from "../Video/VideoPlayer";
 
 type DialogComponentProps = {
-    coordinates: number[];
-} & DialogProps<ElementType>
+  coordinates: number[];
+} & DialogProps<ElementType>;
 
 export const DialogComponent: FC<DialogComponentProps> = ({
   open,
@@ -15,56 +14,84 @@ export const DialogComponent: FC<DialogComponentProps> = ({
   onClose,
   ...props
 }) => {
-  let [categories] = useState({
-    Recent: [
-      {
-        id: 1,
-        title: "Does drinking coffee make you smarter?",
-        date: "5h ago",
-        commentCount: 5,
-        shareCount: 2,
-      },
-      {
-        id: 2,
-        title: "So you've bought coffee... now what?",
-        date: "2h ago",
-        commentCount: 3,
-        shareCount: 2,
-      },
-    ],
-    Popular: [
-      {
-        id: 1,
-        title: "Is tech making coffee better or worse?",
-        date: "Jan 7",
-        commentCount: 29,
-        shareCount: 16,
-      },
-      {
-        id: 2,
-        title: "The most innovative things happening in coffee",
-        date: "Mar 19",
-        commentCount: 24,
-        shareCount: 12,
-      },
-    ],
-    Trending: [
-      {
-        id: 1,
-        title: "Ask Me Anything: 10 answers to your questions about coffee",
-        date: "2d ago",
-        commentCount: 9,
-        shareCount: 5,
-      },
-      {
-        id: 2,
-        title: "The worst advice we've ever heard about coffee",
-        date: "4d ago",
-        commentCount: 1,
-        shareCount: 2,
-      },
-    ],
-  });
+  // let [categories] = useState({
+  //   Recent: [
+  //     {
+  //       id: 1,
+  //       title: "Does drinking coffee make you smarter?",
+  //       date: "5h ago",
+  //       commentCount: 5,
+  //       shareCount: 2,
+  //     },
+  //     {
+  //       id: 2,
+  //       title: "So you've bought coffee... now what?",
+  //       date: "2h ago",
+  //       commentCount: 3,
+  //       shareCount: 2,
+  //     },
+  //     {
+  //       id: 1,
+  //       title: "Is tech making coffee better or worse?",
+  //       date: "Jan 7",
+  //       commentCount: 29,
+  //       shareCount: 16,
+  //     },
+  //     {
+  //       id: 2,
+  //       title: "The most innovative things happening in coffee",
+  //       date: "Mar 19",
+  //       commentCount: 24,
+  //       shareCount: 12,
+  //     },
+  //     {
+  //       id: 1,
+  //       title: "Is tech making coffee better or worse?",
+  //       date: "Jan 7",
+  //       commentCount: 29,
+  //       shareCount: 16,
+  //     },
+  //     {
+  //       id: 2,
+  //       title: "The most innovative things happening in coffee",
+  //       date: "Mar 19",
+  //       commentCount: 24,
+  //       shareCount: 12,
+  //     },
+  //   ],
+  //   Popular: [
+  //     {
+  //       id: 1,
+  //       title: "Is tech making coffee better or worse?",
+  //       date: "Jan 7",
+  //       commentCount: 29,
+  //       shareCount: 16,
+  //     },
+  //     {
+  //       id: 2,
+  //       title: "The most innovative things happening in coffee",
+  //       date: "Mar 19",
+  //       commentCount: 24,
+  //       shareCount: 12,
+  //     },
+  //   ],
+  //   Trending: [
+  //     {
+  //       id: 1,
+  //       title: "Ask Me Anything: 10 answers to your questions about coffee",
+  //       date: "2d ago",
+  //       commentCount: 9,
+  //       shareCount: 5,
+  //     },
+  //     {
+  //       id: 2,
+  //       title: "The worst advice we've ever heard about coffee",
+  //       date: "4d ago",
+  //       commentCount: 1,
+  //       shareCount: 2,
+  //     },
+  //   ],
+  // });
   return (
     <Transition appear show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose} {...props}>
@@ -80,8 +107,8 @@ export const DialogComponent: FC<DialogComponentProps> = ({
           <div className="fixed inset-0 bg-black/25" />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center">
+        <div className="fixed inset-0">
+          <div className="flex h-full items-center justify-center p-4 text-center">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -91,10 +118,10 @@ export const DialogComponent: FC<DialogComponentProps> = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-4/5 transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-4/5 flex flex-col max-h-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                 <button
                   type="button"
-                  className="inline-flex absolute top-2 right-2 justify-center border border-transparent text-sm font-medium text-blue-900"
+                  className="absolute top-2 right-2 border border-transparent text-sm font-medium"
                   onClick={() => onClose(true)}
                 >
                   <svg
@@ -126,60 +153,38 @@ export const DialogComponent: FC<DialogComponentProps> = ({
                     nostrum veniam ad ab.
                   </p>
                 </div>
-                <div className="w-full px-2 py-8 sm:px-0">
+                <div ></div>
+                <div className="flex flex-col w-full px-2 py-3 sm:px-0 overflow-hidden">
                   <Tab.Group>
-                    <Tab.List className="flex space-x-1 rounded-xl bg-slate-50 p-1">
-                      {Object.keys(categories).map((category) => (
+                    <Tab.List className="flex space-x-1 bg-slate-50 p-1">
+                      {datas.categories.map((category) => (
                         <Tab
-                          key={category}
+                          key={category.name}
                           className={({ selected }) =>
                             classNames(
                               "w-full rounded-lg py-2.5 text-sm font-medium leading-5",
-                              "ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                              "ring-white/60 focus:outline-none focus:ring-2",
                               selected
                                 ? "bg-white text-blue-700 shadow"
-                                : "text-grey hover:bg-white/[0.12] hover:text-black"
+                                : "text-slate-500 hover:bg-white/[0.12] hover:text-black"
                             )
                           }
                         >
-                          {category}
+                          {category.name}
                         </Tab>
                       ))}
                     </Tab.List>
-                    <Tab.Panels className="mt-2">
-                      {Object.values(categories).map((posts, idx) => (
+                    <Tab.Panels className="mt-2 overflow-y-auto">
+                      {datas.categories.map((posts, idx) => (
                         <Tab.Panel
                           key={idx}
                           className={classNames(
-                            "rounded-xl bg-white p-3",
-                            "ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
                           )}
                         >
-                          <ul>
-                            {posts.map((post) => (
-                              <li
-                                key={post.id}
-                                className="relative rounded-md p-3 hover:bg-gray-100"
-                              >
-                                <h3 className="text-sm font-medium leading-5">
-                                  {post.title}
-                                </h3>
-
-                                <ul className="mt-1 flex space-x-1 text-xs font-normal leading-4 text-gray-500">
-                                  <li>{post.date}</li>
-                                  <li>&middot;</li>
-                                  <li>{post.commentCount} comments</li>
-                                  <li>&middot;</li>
-                                  <li>{post.shareCount} shares</li>
-                                </ul>
-
-                                <a
-                                  href="#"
-                                  className={classNames(
-                                    "absolute inset-0 rounded-md",
-                                    "ring-blue-400 focus:z-10 focus:outline-none focus:ring-2"
-                                  )}
-                                />
+                          <ul className="grid gap-0.06 sm:grid-cols-2 lg:grid-cols-3">
+                            {posts.videos.map((post, id) => (
+                              <li key={`post-${id}`} className="relative">
+                                <VideoPlayer src={post.sources[0]} autoPlay/>
                               </li>
                             ))}
                           </ul>

@@ -3,95 +3,25 @@ import { Dialog, DialogProps, Tab, Transition } from "@headlessui/react";
 import { ElementType, FC, Fragment, useState } from "react";
 import datas from "../../../datas/videos-collection.json";
 import VideoPlayer from "../Video/VideoPlayer";
+import { useQuery } from "@tanstack/react-query";
+import { getRessources } from "../../../request/query";
+import { MapFeature } from "@/types/MapSource";
 
 type DialogComponentProps = {
-  coordinates: number[];
+  feature: MapFeature;
 } & DialogProps<ElementType>;
 
 export const DialogComponent: FC<DialogComponentProps> = ({
   open,
-  coordinates,
+  feature,
   onClose,
   ...props
 }) => {
-  // let [categories] = useState({
-  //   Recent: [
-  //     {
-  //       id: 1,
-  //       title: "Does drinking coffee make you smarter?",
-  //       date: "5h ago",
-  //       commentCount: 5,
-  //       shareCount: 2,
-  //     },
-  //     {
-  //       id: 2,
-  //       title: "So you've bought coffee... now what?",
-  //       date: "2h ago",
-  //       commentCount: 3,
-  //       shareCount: 2,
-  //     },
-  //     {
-  //       id: 1,
-  //       title: "Is tech making coffee better or worse?",
-  //       date: "Jan 7",
-  //       commentCount: 29,
-  //       shareCount: 16,
-  //     },
-  //     {
-  //       id: 2,
-  //       title: "The most innovative things happening in coffee",
-  //       date: "Mar 19",
-  //       commentCount: 24,
-  //       shareCount: 12,
-  //     },
-  //     {
-  //       id: 1,
-  //       title: "Is tech making coffee better or worse?",
-  //       date: "Jan 7",
-  //       commentCount: 29,
-  //       shareCount: 16,
-  //     },
-  //     {
-  //       id: 2,
-  //       title: "The most innovative things happening in coffee",
-  //       date: "Mar 19",
-  //       commentCount: 24,
-  //       shareCount: 12,
-  //     },
-  //   ],
-  //   Popular: [
-  //     {
-  //       id: 1,
-  //       title: "Is tech making coffee better or worse?",
-  //       date: "Jan 7",
-  //       commentCount: 29,
-  //       shareCount: 16,
-  //     },
-  //     {
-  //       id: 2,
-  //       title: "The most innovative things happening in coffee",
-  //       date: "Mar 19",
-  //       commentCount: 24,
-  //       shareCount: 12,
-  //     },
-  //   ],
-  //   Trending: [
-  //     {
-  //       id: 1,
-  //       title: "Ask Me Anything: 10 answers to your questions about coffee",
-  //       date: "2d ago",
-  //       commentCount: 9,
-  //       shareCount: 5,
-  //     },
-  //     {
-  //       id: 2,
-  //       title: "The worst advice we've ever heard about coffee",
-  //       date: "4d ago",
-  //       commentCount: 1,
-  //       shareCount: 2,
-  //     },
-  //   ],
-  // });
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["place-ressources", feature.id],
+    queryFn: () => getRessources(feature)
+  })
+  const { ressources } = data || [];
   return (
     <Transition appear show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={onClose} {...props}>
@@ -118,7 +48,7 @@ export const DialogComponent: FC<DialogComponentProps> = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-4/5 flex flex-col max-h-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="md:w-4/5 sm:w-full flex flex-col max-h-full transform overflow-hidden rounded-2xl bg-white md:px-6 max-md:px-4 pt-8 pb-4 text-left align-middle shadow-xl transition-all">
                 <button
                   type="button"
                   className="absolute top-2 right-2 border border-transparent text-sm font-medium"
@@ -154,7 +84,7 @@ export const DialogComponent: FC<DialogComponentProps> = ({
                   </p>
                 </div>
                 <div ></div>
-                <div className="flex flex-col w-full px-2 py-3 sm:px-0 overflow-hidden">
+                <div className="flex flex-col w-full px-2 max-md:px-0 py-3 sm:px-0 overflow-hidden">
                   <Tab.Group>
                     <Tab.List className="flex space-x-1 bg-slate-50 p-1">
                       {datas.categories.map((category) => (
@@ -174,19 +104,25 @@ export const DialogComponent: FC<DialogComponentProps> = ({
                         </Tab>
                       ))}
                     </Tab.List>
-                    <Tab.Panels className="mt-2 overflow-y-auto">
+                    <Tab.Panels className="flex mt-2 overflow-hidden">
                       {datas.categories.map((posts, idx) => (
                         <Tab.Panel
                           key={idx}
                           className={classNames(
+                            "overflow-hidden"
                           )}
                         >
-                          <ul className="grid gap-0.06 sm:grid-cols-2 lg:grid-cols-3">
-                            {posts.videos.map((post, id) => (
-                              <li key={`post-${id}`} className="relative">
-                                <VideoPlayer src={post.sources[0]} autoPlay/>
+                          <ul data-te-infinite-scroll-init className="grid divide-x divide-y sm:grid-cols-2 lg:grid-cols-3 overflow-y-auto max-h-full">
+                            {ressources?.map((ressource, id) => (
+                              <li key={`ressource-${id}`} className="relative">
+                                <VideoPlayer src={ressource.source} autoPlay/>
                               </li>
                             ))}
+                            {/* {posts?.videos?.map((ressource, id) => (
+                              <li key={`post-${id}`} className="relative">
+                                <VideoPlayer src={ressource.sources[0]} autoPlay/>
+                              </li>
+                            ))} */}
                           </ul>
                         </Tab.Panel>
                       ))}

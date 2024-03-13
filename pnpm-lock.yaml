@@ -5,21 +5,24 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@tanstack/react-query':
-    specifier: ^5.22.2
-    version: 5.22.2(react@18.2.0)
-  '@tanstack/react-query-devtools':
-    specifier: ^5.24.0
-    version: 5.24.0(@tanstack/react-query@5.22.2)(react@18.2.0)
-  axios:
-    specifier: ^1.6.7
-    version: 1.6.7
   '@headlessui/react':
     specifier: ^1.7.18
     version: 1.7.18(react-dom@18.2.0)(react@18.2.0)
   '@heroicons/react':
     specifier: ^2.1.1
     version: 2.1.1(react@18.2.0)
+  '@tanstack/react-query':
+    specifier: ^5.22.2
+    version: 5.22.2(react@18.2.0)
+  '@tanstack/react-query-devtools':
+    specifier: ^5.24.0
+    version: 5.24.0(@tanstack/react-query@5.22.2)(react@18.2.0)
+  '@types/geojson':
+    specifier: ^7946.0.14
+    version: 7946.0.14
+  axios:
+    specifier: ^1.6.7
+    version: 1.6.7
   chromatic:
     specifier: ^10.9.5
     version: 10.9.5
@@ -3856,7 +3859,8 @@ packages:
     dependencies:
       '@tanstack/query-core': 5.22.2
       react: 18.2.0
-      
+    dev: false
+
   /@tanstack/react-virtual@3.1.2(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-qibmxtctgOZo2I+3Rw5GR9kXgaa15U5r3/idDY1ItUKW15UK7GhCfyIfE6qYuJ1fxQF6dJDsD8SbpPyuJgpxuA==}
     peerDependencies:
@@ -4052,7 +4056,6 @@ packages:
 
   /@types/geojson@7946.0.14:
     resolution: {integrity: sha512-WCfD5Ht3ZesJUsONdhvm84dmzWOiOzOAqOncN0++w0lBw1o8OuDNJF2McvvCef/yBqb/HYRahp1BYtODFQ8bRg==}
-    dev: true
 
   /@types/graceful-fs@4.1.9:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}

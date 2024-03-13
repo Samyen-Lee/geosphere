@@ -12,10 +12,10 @@ const VideoPlayer: FC<
   useEffect(() => {
     const videoEl = videoRef.current;
     const onMouseEnter = () => {
-      videoEl?.play();
+      videoEl?.paused && videoEl?.play();
     };
     const onMouseLeave = () => {
-      videoEl?.pause();
+      videoEl?.played && videoEl?.pause();
     };
     if (videoEl) {
       if (autoPlay) {

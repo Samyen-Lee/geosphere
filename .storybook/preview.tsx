@@ -6,6 +6,7 @@ import { ThemeProvider, DefaultTheme } from 'styled-components';
 import React from "react";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '../src/app/globals.css';
+import { TanstackProvider } from "../src/providers/TanstackProvider";
 
 import mapboxgl from 'mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 
@@ -31,7 +32,9 @@ const preview: Preview = {
   decorators: [
     (Story) => (
       <ThemeProvider theme={theme}>
+        <TanstackProvider>
         <Story />
+        </TanstackProvider>
       </ThemeProvider>
     ),
   ],

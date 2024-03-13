@@ -1,4 +1,4 @@
-import { MapIntercationFn } from "@/types/MapSource";
+import { MapFeature, MapIntercationFn } from "@/types/MapSource";
 import mapboxgl, { EventData, MapLayerEventType } from "mapbox-gl";
 import { MutableRefObject } from "react";
 
@@ -57,7 +57,7 @@ export const displayPopup: MapIntercationFn<keyof MapLayerEventType> = (
       const description =
         features[0]?.properties?.description ?? features[0].properties?.name;
       const coordinates = features[0].geometry.coordinates.slice();
-      popup.setLngLat(coordinates).setHTML(description).addTo(map.current);
+      popup.setLngLat([coordinates[0], coordinates[1]]).setHTML(description).addTo(map.current);
     }
   }
 }
@@ -75,15 +75,20 @@ export const closePopup: MapIntercationFn<keyof MapLayerEventType> = (
 export const displayModal: MapIntercationFn<keyof MapLayerEventType> = (
   e,
   map,
-  onOpen: (coord: number[]) => void
+  onOpen: (feature: MapFeature) => void
 ) => {
   let features = e?.features;
   if (!features) features = map?.current?.queryRenderedFeatures(e?.point);
-  
+
   if (features && Boolean(features.length)) {
-    if(features[0].geometry.type === "Point") {
-      const coordinates = features[0].geometry?.coordinates?.slice();
-      onOpen(coordinates);
+    const { id, properties, geometry } = features[0];
+    if(geometry.type === "Point") {
+      const coordinates = geometry?.coordinates?.slice();
+      onOpen({
+        id,
+        properties,
+        coordinates
+      });
     }
   }
 };

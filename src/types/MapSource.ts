@@ -1,3 +1,4 @@
+import { GeoJsonProperties } from "geojson";
 import {
   EventData,
   GeoJSONSource,
@@ -9,6 +10,12 @@ import { MutableRefObject } from "react";
 export interface IMapSource {
   name: string;
   data: GeoJSONSourceRaw;
+}
+
+export interface MapFeature {
+  id: string | number | undefined;
+  properties: GeoJsonProperties;
+  coordinates: number[];
 }
 
 export type MapIntercationFn<T extends keyof MapLayerEventType> = (

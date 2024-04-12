@@ -22,3 +22,16 @@ body {
 .map-container {
   height: 100vh;
 }
+
+@layer components {
+  .overlay-inactive {
+    opacity: 0;
+  }
+  .overlay-active {
+    opacity: 1;
+  }
+  .overlay-parent-container {
+    width: 100%;
+    height: 100%;
+  }
+}

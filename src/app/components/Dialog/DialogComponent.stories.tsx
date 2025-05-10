@@ -19,9 +19,32 @@ type Story = StoryObj<typeof meta>;
 export const BasicDialog: Story = {
   args: {
     open: true,
-    coordinates: [],
+    // coordinates: [],
+    title: "Title",
+    desc: "Description",
+    feature: {
+      id: 338595071,
+      properties: {
+        name_script: "Latin",
+        "category_zh-Hans": "大学",
+        type: "University",
+        filterrank: 1,
+        category_en: "University",
+        name_en: "American University",
+        sizerank: 15,
+        iso_3166_1: "US",
+        maki: "college",
+        name_ar: "الجامعة الأميركية",
+        iso_3166_2: "US-DC",
+        name_es: "Universidad Americana",
+        class: "education",
+        name: "American University",
+      },
+      coordinates: [-77.08926200866699, 38.93724724198066],
+    },
   },
   render: (args) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [open, setOpen] = useState(true);
     const closeModal = () => {
       setOpen(false);

@@ -1,11 +1,11 @@
-import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment } from "react";
+import { Dialog, DialogProps, Transition } from "@headlessui/react";
+import React, { ElementType, FC, Fragment, PropsWithChildren } from "react";
 
-const DialogLayout = (props) => {
-  const { onClose, children, open } = props;
+const DialogLayout: FC<DialogProps<ElementType> & PropsWithChildren> = (props) => {
+  const { onClose, children, open, ...rest } = props;
   return (
     <Transition appear show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={onClose} {...props}>
+      <Dialog as="div" className="relative z-10" onClose={onClose} {...rest}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
